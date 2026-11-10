@@ -89,6 +89,7 @@ def create_app(db_path: str | Path | None = None) -> Flask:
             q=request.args.get("q", "").strip(),
             category=request.args.get("category", ""),
             source=request.args.get("source", ""),
+            agency_type=request.args.get("agency_type", ""),
             status=request.args.get("status", "active"),
             include_expired=request.args.get("expired") == "1",
             sort=request.args.get("sort", "due"),
@@ -100,7 +101,9 @@ def create_app(db_path: str | Path | None = None) -> Flask:
         f = filters_from_request()
         rows = db.query_rfps(conn, **f)
         keywords = config.load_keywords()
-        sources = [s["name"] for s in config.load_sources()]
+        source_cfg = config.load_sources()
+        sources = [s["name"] for s in source_cfg]
+        agency_types = sorted({s.get("agency_type") for s in source_cfg if s.get("agency_type")})
         last_started = db.last_run_started(conn)
         return render_template(
             "index.html",
@@ -108,6 +111,7 @@ def create_app(db_path: str | Path | None = None) -> Flask:
             f=f,
             categories=list((keywords.get("categories") or {}).keys()),
             sources=sources,
+            agency_types=agency_types,
             statuses=db.STATUSES,
             last_started=last_started,
             job=job,
@@ -142,10 +146,10 @@ def create_app(db_path: str | Path | None = None) -> Flask:
         rows = db.query_rfps(get_db(), **filters_from_request())
         buf = io.StringIO()
         w = csv.writer(buf)
-        w.writerow(["Due date", "Title", "Agency", "Solicitation #", "Categories", "Keywords",
+        w.writerow(["Due date", "Title", "Agency", "Agency type", "Solicitation #", "Categories", "Keywords",
                     "Score", "Status", "Posted", "First seen", "Link", "Notes"])
         for r in rows:
-            w.writerow([r["due_date"] or "", r["title"], r["agency"], r["solicitation_id"] or "",
+            w.writerow([r["due_date"] or "", r["title"], r["agency"], r["agency_type"] or "", r["solicitation_id"] or "",
                         "; ".join(r["categories"]), "; ".join(r["keywords"]), r["score"], r["status"],
                         r["posted_date"] or "", r["first_seen"][:10], r["url"], r["notes"] or ""])
         return Response(buf.getvalue(), mimetype="text/csv",

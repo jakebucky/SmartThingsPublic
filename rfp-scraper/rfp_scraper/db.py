@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS rfps (
     uid             TEXT PRIMARY KEY,
     source          TEXT NOT NULL,
     agency          TEXT,
+    agency_type     TEXT,
     title           TEXT NOT NULL,
     url             TEXT NOT NULL,
     description     TEXT,
@@ -60,7 +61,16 @@ def connect(path: Path | str) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path), check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    _migrate(conn)
     return conn
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Add columns introduced after a database was first created."""
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(rfps)")}
+    if "agency_type" not in cols:
+        conn.execute("ALTER TABLE rfps ADD COLUMN agency_type TEXT")
+        conn.commit()
 
 
 def upsert_rfp(conn: sqlite3.Connection, listing: Listing, match: Match) -> bool:
@@ -71,6 +81,7 @@ def upsert_rfp(conn: sqlite3.Connection, listing: Listing, match: Match) -> bool
         uid=listing.uid,
         source=listing.source,
         agency=listing.agency,
+        agency_type=listing.agency_type,
         title=listing.title,
         url=listing.url,
         description=listing.description,
@@ -84,7 +95,7 @@ def upsert_rfp(conn: sqlite3.Connection, listing: Listing, match: Match) -> bool
     )
     if existing:
         conn.execute(
-            """UPDATE rfps SET agency=:agency, title=:title, url=:url, description=:description,
+            """UPDATE rfps SET agency=:agency, agency_type=:agency_type, title=:title, url=:url, description=:description,
                    solicitation_id=:solicitation_id,
                    posted_date=COALESCE(:posted_date, posted_date),
                    due_date=COALESCE(:due_date, due_date),
@@ -94,9 +105,9 @@ def upsert_rfp(conn: sqlite3.Connection, listing: Listing, match: Match) -> bool
         )
         return False
     conn.execute(
-        """INSERT INTO rfps (uid, source, agency, title, url, description, solicitation_id,
+        """INSERT INTO rfps (uid, source, agency, agency_type, title, url, description, solicitation_id,
                posted_date, due_date, score, categories, keywords, first_seen, last_seen)
-           VALUES (:uid, :source, :agency, :title, :url, :description, :solicitation_id,
+           VALUES (:uid, :source, :agency, :agency_type, :title, :url, :description, :solicitation_id,
                :posted_date, :due_date, :score, :categories, :keywords, :now, :now)""",
         values,
     )
@@ -134,6 +145,7 @@ def query_rfps(
     q: str = "",
     category: str = "",
     source: str = "",
+    agency_type: str = "",
     status: str = "",
     include_expired: bool = False,
     sort: str = "due",
@@ -148,6 +160,9 @@ def query_rfps(
     if source:
         where.append("source = ?")
         params.append(source)
+    if agency_type:
+        where.append("agency_type = ?")
+        params.append(agency_type)
     if status == "active":
         where.append("status != 'dismissed'")
     elif status:

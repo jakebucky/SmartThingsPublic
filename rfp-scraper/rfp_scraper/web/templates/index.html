@@ -6,6 +6,10 @@
     <option value="">All services</option>
     {% for c in categories %}<option {{ 'selected' if f.category == c }}>{{ c }}</option>{% endfor %}
   </select>
+  <select name="agency_type">
+    <option value="">All agency types</option>
+    {% for t in agency_types %}<option {{ 'selected' if f.agency_type == t }}>{{ t }}</option>{% endfor %}
+  </select>
   <select name="source">
     <option value="">All sources</option>
     {% for s in sources %}<option {{ 'selected' if f.source == s }}>{{ s }}</option>{% endfor %}
@@ -49,7 +53,7 @@
       <a class="title" href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a>
       {% if r.first_seen[:10] >= (last_started or '')[:10] and r.status == 'new' %}<span class="badge new">New</span>{% endif %}
       <div class="meta">
-        {{ r.agency }}{% if r.solicitation_id %} · #{{ r.solicitation_id }}{% endif %}
+        {{ r.agency }}{% if r.agency_type %} ({{ r.agency_type }}){% endif %}{% if r.solicitation_id %} · #{{ r.solicitation_id }}{% endif %}
         {% if r.posted_date %} · posted {{ r.posted_date|pretty_date }}{% endif %}
         · via {{ r.source }}
       </div>

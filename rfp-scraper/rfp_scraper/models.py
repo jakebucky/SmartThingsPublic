@@ -17,6 +17,7 @@ class Listing:
     posted_date: date | None = None
     due_date: date | None = None
     solicitation_id: str = ""
+    agency_type: str = ""
 
     @property
     def uid(self) -> str:

@@ -8,6 +8,7 @@ RFP, RFQ, bid, or request for proposals. A source can instead give an explicit
 from __future__ import annotations
 
 import re
+from datetime import date
 from typing import Iterable
 from urllib.parse import urljoin, urldefrag
 
@@ -27,6 +28,7 @@ SOLICITATION_ID_RE = re.compile(
     r"([A-Z0-9][A-Z0-9\-_.]{2,})\b",
     re.IGNORECASE,
 )
+CLOSED_RE = re.compile(r"\b(closed|awarded|cancell?ed|rescinded|archived)\b", re.IGNORECASE)
 CONTAINER_TAGS = ("tr", "li", "article", "dd", "p")
 SKIP_ANCESTORS = ("nav", "header", "footer")
 MAX_BLOCK_CHARS = 1200
@@ -87,6 +89,13 @@ def parse_listings(html: str, base_url: str, source: dict) -> list[Listing]:
     listings: list[Listing] = []
     seen: set[str] = set()
 
+    # On a page titled e.g. "Purchasing RFPs and Bids", rows of the listing table
+    # often don't repeat the word RFP; a dated row there is enough.
+    heading = " ".join(
+        _clean(t.get_text(" ", strip=True)) for t in soup.find_all(["title", "h1", "h2"])[:6]
+    )
+    page_is_bid_list = bool(SOLICITATION_RE.search(heading))
+
     item_selector = source.get("item_selector")
     title_selector = source.get("title_selector")
 
@@ -122,13 +131,25 @@ def parse_listings(html: str, base_url: str, source: dict) -> list[Listing]:
         posted, due = extract_dates(block_text)
         sol_id = _solicitation_id(block_text)
         if not item_selector:
-            if not SOLICITATION_RE.search(block_text):
+            in_bid_list = (
+                page_is_bid_list
+                and block.name in ("tr", "li")
+                and (posted or due)
+                and len(link_text) >= 12
+            )
+            if not SOLICITATION_RE.search(block_text) and not in_bid_list:
                 continue
             # Boilerplate like "Vendors must register to receive bid notices" mentions
             # bids but isn't one: a real listing names the solicitation in its link
             # text, or carries a date / solicitation number next to it.
             if not (SOLICITATION_RE.search(link_text) and len(link_text) >= 12) and not (posted or due or sol_id):
                 continue
+
+        # Many county pages keep past solicitations on the same list, marked
+        # "Closed" / "Awarded". Drop those unless they show a future due date.
+        status_text = block_text.replace(title, " ")
+        if CLOSED_RE.search(status_text) and not (due and due >= date.today()):
+            continue
 
         key = f"{url}|{title.lower()}"
         if key in seen:

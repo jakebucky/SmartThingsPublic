@@ -5,7 +5,7 @@
 <p class="hint">Edit <code>config/sources.yaml</code> to add, fix or disable sites. A source with an error or
   0 listings usually means its page moved or needs an <code>item_selector</code>.</p>
 <table class="sources">
-  <thead><tr><th>Source</th><th>Type</th><th>Last run</th><th>Result</th><th>Listings</th><th>Relevant</th><th>New</th></tr></thead>
+  <thead><tr><th>Source</th><th>Agency type</th><th>Last run</th><th>Result</th><th>Listings</th><th>Relevant</th><th>New</th></tr></thead>
   <tbody>
   {% for s in sources %}
     {% set r = runs.get(s.name) %}
@@ -15,7 +15,7 @@
         {% if s.url %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.url }}</a>
         {% elif s.org %}<a href="https://{{ s.org }}.bonfirehub.com/portal/?tab=openOpportunities" target="_blank" rel="noopener">{{ s.org }}.bonfirehub.com</a>{% endif %}
       </td>
-      <td>{{ s.type }}{% if not s.enabled %}<br><small>disabled</small>{% endif %}</td>
+      <td>{{ s.agency_type or '' }}<br><small>{{ s.type }}</small>{% if not s.enabled %}<br><small>disabled</small>{% endif %}</td>
       <td>{{ r.started_at|pretty_date if r else 'never' }}</td>
       <td>
         {% if r %}<span class="pill {{ r.status }}">{{ r.status or 'running' }}</span>

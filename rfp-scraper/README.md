@@ -17,6 +17,26 @@ python -m rfp_scraper serve        # open http://127.0.0.1:5000
 
 The dashboard also has a **Run scrape now** button.
 
+## Coverage
+
+| Type | Sources |
+|---|---|
+| State | VendorNet, WisDOT consultant selection, DOA Division of Facilities Development |
+| Cities & utilities | City of Milwaukee (DPW + Purchasing), City of Madison (Bonfire), MMSD |
+| Counties | Milwaukee, Waukesha, Dane (Public Works + Purchasing), Racine, Ozaukee, Washington, Brown, Outagamie, Marathon, Eau Claire |
+| School districts | Milwaukee Public Schools, Madison Metropolitan (2 pages), Kenosha Unified, Appleton Area, Milton |
+| Technical colleges | Madison College |
+| Federal | SAM.gov opportunities in WI (needs `SAM_API_KEY`) |
+
+The dashboard can filter by agency type (County, School District and so on).
+
+**Not covered yet:** these agencies post formal solicitations only on
+DemandStar (Euna OpenBids) or OpenGov: Rock, La Crosse, Walworth, Kenosha,
+Sheboygan and Winnebago counties; Racine Unified, Green Bay, Oshkosh, Eau Claire,
+Waukesha, Elmbrook, Sun Prairie, Verona, Middleton-Cross Plains, Janesville and
+West Allis-West Milwaukee school districts; and MATC. A DemandStar adapter
+would pick up most of them at once (see the bottom of `config/sources.yaml`).
+
 ## What it does
 
 1. **Collects listings** from each source in `config/sources.yaml`:
@@ -72,9 +92,9 @@ Tests use saved sample pages in `tests/fixtures/` and make no network calls.
 
 ## Known limits / next steps
 
-- Many agencies post through aggregators that require a login (DemandStar,
-  QuestCDN, BidNet, Bid Express). Those aren't scraped; adding them needs an
-  account and each site's terms allow it.
+- DemandStar / OpenGov / QuestCDN / Bid Express listings aren't scraped yet
+  (see "Not covered yet" above). Adding one requires checking that the site's
+  terms allow automated access.
 - PDF attachments are linked but not read.
 - Sites that render listings with JavaScript (other than Bonfire) need a
   browser-based adapter (e.g. Playwright).

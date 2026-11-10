@@ -57,6 +57,7 @@ def run(
 
         matched = new = 0
         for listing in listings:
+            listing.agency_type = listing.agency_type or source.get("agency_type", "")
             relevant, match = matcher.is_relevant(listing)
             if not relevant:
                 continue

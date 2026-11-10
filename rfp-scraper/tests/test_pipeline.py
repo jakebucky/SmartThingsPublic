@@ -27,8 +27,8 @@ class FakeFetcher:
 
 def sources():
     return [
-        {"name": "City", "agency": "City of Example", "type": "html", "url": "https://city.example.gov/bids", "enabled": True},
-        {"name": "County", "agency": "Example County", "type": "html", "url": "https://county.example.gov/", "enabled": True},
+        {"name": "City", "agency": "City of Example", "agency_type": "City", "type": "html", "url": "https://city.example.gov/bids", "enabled": True},
+        {"name": "County", "agency": "Example County", "agency_type": "County", "type": "html", "url": "https://county.example.gov/", "enabled": True},
         {"name": "Madison", "agency": "City of Madison", "type": "bonfire", "org": "cityofmadison", "enabled": True},
         {"name": "Broken", "agency": "Nowhere", "type": "html", "url": "https://broken.example.gov/", "enabled": True},
         {"name": "Off", "agency": "Off", "type": "html", "url": "https://off.example.gov/", "enabled": False},
@@ -82,6 +82,10 @@ def test_dashboard(tmp_path, keywords, fixture_text, monkeypatch):
     page = client.get("/?expired=1&category=Structural").get_data(as_text=True)
     assert "Bridge Inspection" in page and "Stormwater" not in page
 
+    page = client.get("/?expired=1&agency_type=County").get_data(as_text=True)
+    assert "Bridge Inspection" in page and "Stormwater" not in page
+    assert "All agency types" in page
+
     page = client.get("/sources").get_data(as_text=True)
     assert "Broken" in page and "error" in page
 
@@ -102,3 +106,24 @@ def test_expired_hidden_by_default(tmp_path):
     db.upsert_rfp(conn, old, Match(score=3))
     assert db.query_rfps(conn) == []
     assert len(db.query_rfps(conn, include_expired=True)) == 1
+
+
+def test_agency_type_stored(tmp_path, keywords, fixture_text):
+    conn = db.connect(tmp_path / "t.db")
+    runner.run(conn, sources(), keywords, fetcher=make_fetcher(fixture_text))
+    county = db.query_rfps(conn, include_expired=True, agency_type="County")
+    assert county and all(r["agency"] == "Example County" for r in county)
+
+
+def test_migrates_old_database(tmp_path):
+    import sqlite3
+    path = tmp_path / "old.db"
+    old = sqlite3.connect(path)
+    old.execute("""CREATE TABLE rfps (uid TEXT PRIMARY KEY, source TEXT NOT NULL, agency TEXT,
+        title TEXT NOT NULL, url TEXT NOT NULL, description TEXT, solicitation_id TEXT,
+        posted_date TEXT, due_date TEXT, score INTEGER, categories TEXT, keywords TEXT,
+        status TEXT NOT NULL DEFAULT 'new', notes TEXT, first_seen TEXT NOT NULL, last_seen TEXT NOT NULL)""")
+    old.commit(); old.close()
+    conn = db.connect(path)
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(rfps)")}
+    assert "agency_type" in cols

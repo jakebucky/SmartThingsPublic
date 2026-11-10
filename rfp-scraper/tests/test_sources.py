@@ -58,3 +58,14 @@ def test_sam_skipped_without_key(monkeypatch):
     monkeypatch.delenv("SAM_API_KEY", raising=False)
     with pytest.raises(SourceSkipped):
         sam_gov.scrape({"name": "SAM"}, fetcher=None)
+
+
+def test_county_rfp_component_skips_closed_and_header_links(fixture_text):
+    src = {"name": "Racine", "agency": "Racine County", "type": "html",
+           "url": "https://www.racinecounty.gov/departments/finance/purchasing-rfps-and-bids"}
+    items = html_page.parse_listings(fixture_text("county_rfp_component.html"), src["url"], src)
+    titles = [i.title for i in items]
+    # Only the open solicitation survives: sort headers, pager, closed and awarded rows are dropped.
+    assert titles == ["Professional Engineering Services - CTH K Culvert and Drainage Improvements"], titles
+    assert items[0].due_date == date(2026, 12, 18)
+    assert items[0].url == "https://www.racinecounty.gov/Home/Components/RFP/RFP/301/26"

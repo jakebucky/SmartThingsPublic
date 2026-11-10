@@ -1,10 +1,12 @@
 # Where to look for RFPs.
 #
 # Every source has:
-#   name     - shown in the dashboard
-#   agency   - the public body that issues the solicitations
-#   type     - html | bonfire | sam_gov
-#   enabled  - set false to skip it
+#   name         - shown in the dashboard
+#   agency       - the public body that issues the solicitations
+#   agency_type  - State | City | County | School District | Technical College |
+#                  Utility | Federal  (used by the dashboard's agency-type filter)
+#   type         - html | bonfire | sam_gov
+#   enabled      - set false to skip it
 #
 # type: html  (any public "Bids / RFPs" web page)
 #   url             - the listing page
@@ -25,73 +27,200 @@
 #   state           - place-of-performance state
 #   days_back       - how far back to look for postings
 #
-# NOTE: these URLs are starting points. Bid pages move often, so after your
-# first run check the Sources tab in the dashboard: any source showing an
-# error or 0 listings needs its URL (or an item_selector) updated.
+# NOTE: bid pages move often. After a run, check the Sources tab in the
+# dashboard: any source showing an error or 0 listings needs its URL (or an
+# item_selector) updated. Entries marked "verify" are best guesses; the rest
+# were confirmed against the agency's own site in November 2026.
 
 sources:
+  # ---------------------------------------------------------------- State
   - name: Wisconsin VendorNet (State)
     agency: State of Wisconsin
+    agency_type: State
     type: html
-    url: https://vendornet.wi.gov/Bids.aspx
+    url: https://vendornet.wi.gov/Bids.aspx  # verify
     enabled: true
 
   - name: WisDOT Engineering Consultant Selection
     agency: Wisconsin Department of Transportation
+    agency_type: State
     type: html
-    url: https://wisconsindot.gov/Pages/doing-bus/eng-consultants/cnslt-rsrces/selection/default.aspx
+    url: https://wisconsindot.gov/Pages/doing-bus/eng-consultants/cnslt-rsrces/selection/default.aspx  # verify
     enabled: true
 
   - name: WI DOA Division of Facilities Development
     agency: Wisconsin Department of Administration
+    agency_type: State
     type: html
-    url: https://doa.wi.gov/Pages/DoingBusiness/DFD-Consultant-Selection.aspx
+    url: https://doa.wi.gov/Pages/DoingBusiness/DFD-Consultant-Selection.aspx  # verify
     enabled: true
 
+  # ---------------------------------------------------------------- Cities & utilities
   - name: City of Milwaukee DPW Bids & Contracts
     agency: City of Milwaukee
+    agency_type: City
     type: html
-    url: https://city.milwaukee.gov/dpw/infrastructure/Bids-and-Contracts
+    url: https://city.milwaukee.gov/dpw/infrastructure/Bids-and-Contracts  # verify
     enabled: true
 
   - name: City of Milwaukee Purchasing
     agency: City of Milwaukee
+    agency_type: City
     type: html
-    url: https://city.milwaukee.gov/Purchasing
-    enabled: true
-
-  - name: Milwaukee County Procurement
-    agency: Milwaukee County
-    type: html
-    url: https://county.milwaukee.gov/EN/Administrative-Services/Procurement
-    enabled: true
-
-  - name: MMSD Bid Opportunities
-    agency: Milwaukee Metropolitan Sewerage District
-    type: html
-    url: https://www.mmsd.com/doing-business/bid-opportunities
+    url: https://city.milwaukee.gov/Purchasing  # verify
     enabled: true
 
   - name: City of Madison (Bonfire)
     agency: City of Madison
+    agency_type: City
     type: bonfire
-    org: cityofmadison
+    org: cityofmadison  # verify
+    enabled: true
+
+  - name: MMSD Bid Opportunities
+    agency: Milwaukee Metropolitan Sewerage District
+    agency_type: Utility
+    type: html
+    url: https://www.mmsd.com/doing-business/bid-opportunities  # verify
+    enabled: true
+
+  # ---------------------------------------------------------------- Counties
+  - name: Milwaukee County Procurement
+    agency: Milwaukee County
+    agency_type: County
+    type: html
+    url: https://county.milwaukee.gov/EN/Administrative-Services/Procurement  # verify
     enabled: true
 
   - name: Waukesha County Purchasing
     agency: Waukesha County
+    agency_type: County
     type: html
-    url: https://www.waukeshacounty.gov/administration/purchasing/
+    url: https://www.waukeshacounty.gov/administration/purchasing/  # verify
     enabled: true
 
+  - name: Dane County Public Works
+    agency: Dane County
+    agency_type: County
+    type: html
+    # Engineering/A-E RFPs for Dane County run through Public Works, not Purchasing.
+    url: https://publicworks.danecounty.gov/  # verify (domain confirmed)
+    fetch_details: true
+    enabled: true
+
+  - name: Dane County Purchasing
+    agency: Dane County
+    agency_type: County
+    type: html
+    url: https://www.danepurchasing.com/  # verify (domain confirmed)
+    enabled: true
+
+  - name: Racine County Purchasing
+    agency: Racine County
+    agency_type: County
+    type: html
+    url: https://www.racinecounty.gov/departments/finance/purchasing-rfps-and-bids
+    enabled: true
+
+  - name: Ozaukee County Bids
+    agency: Ozaukee County
+    agency_type: County
+    type: html
+    url: https://ozaukeecounty.gov/bids.aspx
+    enabled: true
+
+  - name: Washington County Purchasing
+    agency: Washington County
+    agency_type: County
+    type: html
+    url: https://www.washcowisco.gov/departments/purchasing
+    enabled: true
+
+  - name: Brown County Purchasing
+    agency: Brown County
+    agency_type: County
+    type: html
+    # Formal solicitations are also on DemandStar; this page links bid PDFs.
+    url: https://www.browncountywi.gov/departments/administration/general-information/purchasing/
+    enabled: true
+
+  - name: Outagamie County Bids & Proposals
+    agency: Outagamie County
+    agency_type: County
+    type: html
+    url: https://www.outagamie.gov/County-FinancialsBids-Proposals/Bids-Proposals  # verify (listing pages live under this path)
+    enabled: true
+
+  - name: Marathon County RFPs & Bids
+    agency: Marathon County
+    agency_type: County
+    type: html
+    url: https://www.marathoncounty.gov/about-us/rfps-bids
+    enabled: true
+
+  - name: Eau Claire County Bids & Proposals
+    agency: Eau Claire County
+    agency_type: County
+    type: html
+    # Links out to DemandStar for most solicitations.
+    url: https://eauclairecounty.gov/our-government/departments-and-facilities/department-directory/finance/purchasing/bids-and-proposals
+    enabled: true
+
+  # ---------------------------------------------------------------- School districts
   - name: Milwaukee Public Schools Procurement
     agency: Milwaukee Public Schools
+    agency_type: School District
     type: html
-    url: https://mps.milwaukee.k12.wi.us/en/District/About-MPS/Departments/Office-of-Finance/Procurement-Services.htm
+    url: https://mps.milwaukee.k12.wi.us/en/District/About-MPS/Departments/Office-of-Finance/Procurement-Services.htm  # verify
     enabled: true
 
+  - name: Madison Metropolitan SD Bids & Proposals
+    agency: Madison Metropolitan School District
+    agency_type: School District
+    type: html
+    url: https://www.madison.k12.wi.us/purchasing/requests-for-bidsproposals
+    enabled: true
+
+  - name: Madison Metropolitan SD Operations RFPs
+    agency: Madison Metropolitan School District
+    agency_type: School District
+    type: html
+    url: https://operations.madison.k12.wi.us/rfp
+    enabled: true
+
+  - name: Kenosha Unified SD Requests for Proposals
+    agency: Kenosha Unified School District
+    agency_type: School District
+    type: html
+    url: https://www.kusd.edu/district/departments/finance/request-proposals/
+    enabled: true
+
+  - name: Appleton Area SD RFPs & Bids
+    agency: Appleton Area School District
+    agency_type: School District
+    type: html
+    url: https://www.aasd.k12.wi.us/district/district-information/technology-services/requests-for-proposals-bids
+    enabled: true
+
+  - name: Milton SD Requests for Proposals
+    agency: School District of Milton
+    agency_type: School District
+    type: html
+    url: https://www.milton.k12.wi.us/district/district-information/request-for-proposals/
+    enabled: true
+
+  # ---------------------------------------------------------------- Technical colleges
+  - name: Madison College Purchasing
+    agency: Madison Area Technical College
+    agency_type: Technical College
+    type: html
+    url: https://madisoncollege.edu/purchasing
+    enabled: true
+
+  # ---------------------------------------------------------------- Federal
   - name: SAM.gov (Federal, Wisconsin)
     agency: U.S. Federal Government
+    agency_type: Federal
     type: sam_gov
     state: WI
     days_back: 30
@@ -101,3 +230,11 @@ sources:
       - "541370"  # Surveying and Mapping Services
       - "541310"  # Architectural Services
     enabled: true
+
+# Not covered yet: these agencies post formal solicitations only on DemandStar
+# (Euna OpenBids) or OpenGov, which need their own adapter:
+#   Counties: Rock, La Crosse, Walworth, Kenosha, Sheboygan, Winnebago (OpenGov)
+#   Schools:  Racine Unified, Green Bay Area, Oshkosh Area, Eau Claire Area,
+#             Waukesha, Elmbrook, Sun Prairie, Verona, Middleton-Cross Plains,
+#             Janesville, West Allis-West Milwaukee
+#   Colleges: Milwaukee Area Technical College (MATC)

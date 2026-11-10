@@ -1,0 +1,44 @@
+# Letterhead offices (design doc section 3: office keys).
+# Fill in the address lines exactly as they should print on the letterhead.
+# They are left blank on purpose rather than guessed.
+offices:
+  - key: 10
+    name: Milwaukee
+    state: Wisconsin
+    address_lines: []
+    phone: ""
+  - key: 20
+    name: Green Bay
+    state: Wisconsin
+    address_lines: []
+    phone: ""
+  - key: 50
+    name: Madison
+    state: Wisconsin
+    address_lines: []
+    phone: ""
+  - key: 41
+    name: Orlando
+    state: Florida
+    address_lines: []
+    phone: ""
+  - key: 45
+    name: Sarasota
+    state: Florida
+    address_lines: []
+    phone: ""
+  - key: 70
+    name: Miami
+    state: Florida
+    address_lines: []
+    phone: ""
+  - key: 46
+    name: Turks & Caicos
+    state: Other
+    address_lines: []
+    phone: ""
+  - key: 80
+    name: Minneapolis
+    state: Other
+    address_lines: []
+    phone: ""

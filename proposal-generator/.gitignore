@@ -1,0 +1,10 @@
+data/*.db
+data/*.db-*
+data/drafts/
+data/uploads/
+data/exemplars/*
+!data/exemplars/.gitkeep
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

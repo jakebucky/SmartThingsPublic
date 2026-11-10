@@ -1,0 +1,10 @@
+Flask>=3.0
+pypdf>=4.0
+python-docx>=1.1
+docxtpl>=0.18
+openpyxl>=3.1
+PyYAML>=6.0
+pytest>=8.0
+# Optional, only for the provider you choose:
+anthropic>=2.0      # PROPOSAL_MODEL=claude
+openai>=1.40        # PROPOSAL_MODEL=azure_openai

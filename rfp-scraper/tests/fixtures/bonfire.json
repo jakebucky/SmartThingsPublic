@@ -1,0 +1,5 @@
+{"success": 1, "payload": {"projects": {
+  "101": {"ProjectID": 101, "ReferenceID": "11023-0-2026", "ProjectName": "Engineering Services for Lift Station Rehabilitation",
+          "DateClose": "2026-12-10 14:00:00", "DateOpen": "2026-11-03 08:00:00"},
+  "102": {"ProjectID": 102, "ReferenceID": "11024-0-2026", "ProjectName": "Fleet Vehicle Purchase", "DateClose": "2026-12-01 14:00:00"}
+}}}

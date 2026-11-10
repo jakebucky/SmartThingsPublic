@@ -1,0 +1,137 @@
+# What counts as a relevant RFP for GRAEF.
+#
+# Each category has a weight and a list of terms. Terms are matched
+# case-insensitively on whole words against the RFP title + description.
+# An RFP's score is the sum of the weights of the distinct terms it matches
+# (plus any boosts). It is kept only if score >= min_score and it matches
+# no exclude term.
+
+min_score: 2
+
+categories:
+  Transportation:
+    weight: 2
+    terms:
+      - roadway
+      - highway
+      - street reconstruction
+      - street improvements
+      - bridge
+      - traffic
+      - traffic signal
+      - intersection
+      - roundabout
+      - pavement
+      - corridor study
+      - multimodal
+      - bike lane
+      - trail
+      - sidewalk
+      - transit
+      - parking study
+
+  Structural:
+    weight: 2
+    terms:
+      - structural
+      - structural engineering
+      - bridge inspection
+      - parking structure
+      - parking ramp
+      - facade
+      - building condition assessment
+      - facility condition assessment
+      - retaining wall
+      - load rating
+
+  Water Resources:
+    weight: 2
+    terms:
+      - stormwater
+      - storm sewer
+      - sanitary sewer
+      - wastewater
+      - water main
+      - watermain
+      - water utility
+      - drainage
+      - flood
+      - floodplain
+      - green infrastructure
+      - detention pond
+      - lift station
+      - pump station
+      - shoreline
+      - dam
+
+  Civil / Site:
+    weight: 2
+    terms:
+      - civil engineering
+      - site design
+      - site development
+      - site improvements
+      - grading
+      - utility design
+      - infrastructure
+
+  Landscape Architecture & Planning:
+    weight: 2
+    terms:
+      - landscape architecture
+      - landscape architect
+      - park design
+      - park improvements
+      - playground
+      - master plan
+      - comprehensive plan
+      - urban design
+      - streetscape
+      - placemaking
+      - planning study
+      - feasibility study
+
+  Survey & Mapping:
+    weight: 1
+    terms:
+      - land survey
+      - topographic survey
+      - surveying
+      - gis mapping
+
+  General Engineering:
+    weight: 1
+    terms:
+      - engineering
+      - engineering services
+      - design services
+      - professional services
+      - architect/engineer
+      - a/e services
+      - consultant
+      - consulting services
+
+# Extra points for wording that signals a consulting solicitation (what GRAEF
+# pursues) rather than a construction bid.
+boosts:
+  request for qualifications: 1
+  rfq: 1
+  statement of qualifications: 1
+  request for proposals: 1
+  professional engineering: 1
+
+# Anything matching these is dropped even if it scores well.
+exclude:
+  - janitorial
+  - custodial
+  - food service
+  - uniforms
+  - office supplies
+  - vehicle purchase
+  - snow plow
+  - salt
+  - insurance
+  - audit services
+  - legal services
+  - banking services
+  - software license

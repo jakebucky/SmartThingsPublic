@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}RFP Finder{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="{{ url_for('index') }}">RFP Finder <span>Wisconsin engineering opportunities</span></a>
+      <nav>
+        <a href="{{ url_for('index') }}" class="{{ 'on' if request.endpoint == 'index' }}">RFPs</a>
+        <a href="{{ url_for('sources_page') }}" class="{{ 'on' if request.endpoint == 'sources_page' }}">Sources</a>
+        <form method="post" action="{{ url_for('scrape') }}">
+          <button class="btn primary" {{ 'disabled' if job.running }}>
+            {{ 'Scraping…' if job.running else 'Run scrape now' }}
+          </button>
+        </form>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    {% for msg in get_flashed_messages() %}<div class="flash">{{ msg }}</div>{% endfor %}
+    {% if job.last_message and not job.running %}<div class="flash subtle">{{ job.last_message }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

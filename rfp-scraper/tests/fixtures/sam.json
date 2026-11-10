@@ -1,0 +1,9 @@
+{"totalRecords": 2, "opportunitiesData": [
+  {"noticeId": "abc123", "title": "A-E Services for Runway Drainage Design, General Mitchell ARB",
+   "solicitationNumber": "W9133L-27-R-0001", "fullParentPathName": "DEPT OF DEFENSE.DEPT OF THE AIR FORCE",
+   "postedDate": "2026-11-02", "type": "Solicitation", "responseDeadLine": "2026-12-12T16:00:00-06:00",
+   "naicsCode": "541330", "uiLink": "https://sam.gov/opp/abc123/view",
+   "placeOfPerformance": {"city": {"name": "Milwaukee"}, "state": {"code": "WI"}}},
+  {"noticeId": "def456", "title": "Copier Lease", "postedDate": "2026-11-03", "type": "Solicitation",
+   "uiLink": "https://sam.gov/opp/def456/view"}
+]}

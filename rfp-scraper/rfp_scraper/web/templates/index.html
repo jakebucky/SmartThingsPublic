@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="filters" method="get">
+  <input type="search" name="q" value="{{ f.q }}" placeholder="Search title, agency, number…">
+  <select name="category">
+    <option value="">All services</option>
+    {% for c in categories %}<option {{ 'selected' if f.category == c }}>{{ c }}</option>{% endfor %}
+  </select>
+  <select name="source">
+    <option value="">All sources</option>
+    {% for s in sources %}<option {{ 'selected' if f.source == s }}>{{ s }}</option>{% endfor %}
+  </select>
+  <select name="status">
+    <option value="active" {{ 'selected' if f.status == 'active' }}>Not dismissed</option>
+    <option value="" {{ 'selected' if f.status == '' }}>Any status</option>
+    {% for s in statuses %}<option value="{{ s }}" {{ 'selected' if f.status == s }}>{{ s|capitalize }}</option>{% endfor %}
+  </select>
+  <select name="sort">
+    <option value="due" {{ 'selected' if f.sort == 'due' }}>Due soonest</option>
+    <option value="score" {{ 'selected' if f.sort == 'score' }}>Best match</option>
+    <option value="newest" {{ 'selected' if f.sort == 'newest' }}>Newest found</option>
+  </select>
+  <label class="check"><input type="checkbox" name="expired" value="1" {{ 'checked' if f.include_expired }}> Show past due</label>
+  <button class="btn">Filter</button>
+  <a class="btn ghost" href="{{ url_for('export_csv', **request.args) }}">Export CSV</a>
+</form>
+
+<p class="count">{{ rows|length }} RFP{{ '' if rows|length == 1 else 's' }}
+  {% if last_started %}· last scrape {{ last_started|pretty_date }}{% endif %}</p>
+
+{% if not rows %}
+  <div class="empty">
+    <h2>No RFPs to show</h2>
+    <p>Click <strong>Run scrape now</strong> to check the sources, or loosen the filters above.</p>
+  </div>
+{% endif %}
+
+<ul class="rfps">
+{% for r in rows %}
+  {% set left = r.due_date|days_left %}
+  <li class="rfp status-{{ r.status }}">
+    <div class="due {% if left is not none and left < 0 %}past{% elif left is not none and left <= 7 %}soon{% endif %}">
+      {% if r.due_date %}
+        <strong>{{ r.due_date|pretty_date }}</strong>
+        <small>{% if left < 0 %}closed{% elif left == 0 %}due today{% else %}{{ left }} day{{ '' if left == 1 else 's' }} left{% endif %}</small>
+      {% else %}<strong>—</strong><small>no due date found</small>{% endif %}
+    </div>
+    <div class="body">
+      <a class="title" href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a>
+      {% if r.first_seen[:10] >= (last_started or '')[:10] and r.status == 'new' %}<span class="badge new">New</span>{% endif %}
+      <div class="meta">
+        {{ r.agency }}{% if r.solicitation_id %} · #{{ r.solicitation_id }}{% endif %}
+        {% if r.posted_date %} · posted {{ r.posted_date|pretty_date }}{% endif %}
+        · via {{ r.source }}
+      </div>
+      <div class="tags">
+        {% for c in r.categories %}<span class="tag">{{ c }}</span>{% endfor %}
+        <span class="kw" title="Matched keywords">{{ r.keywords|join(', ') }}</span>
+      </div>
+      {% if r.notes %}<p class="notes">{{ r.notes }}</p>{% endif %}
+    </div>
+    <form class="triage" method="post" action="{{ url_for('update_status', uid=r.uid) }}">
+      <span class="score" title="Match score">{{ r.score }}</span>
+      <select name="status" onchange="this.form.submit()" aria-label="Status">
+        {% for s in statuses %}<option value="{{ s }}" {{ 'selected' if r.status == s }}>{{ s|capitalize }}</option>{% endfor %}
+      </select>
+    </form>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

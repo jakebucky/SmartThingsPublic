@@ -1,0 +1,103 @@
+# Where to look for RFPs.
+#
+# Every source has:
+#   name     - shown in the dashboard
+#   agency   - the public body that issues the solicitations
+#   type     - html | bonfire | sam_gov
+#   enabled  - set false to skip it
+#
+# type: html  (any public "Bids / RFPs" web page)
+#   url             - the listing page
+#   item_selector   - optional CSS selector for one listing (e.g. "table.bids tr").
+#                     Leave it out and the scraper auto-detects listings by looking
+#                     for links whose surrounding text mentions RFP/RFQ/bid/etc.
+#   title_selector  - optional CSS selector (inside an item) for the title
+#   fetch_details   - true to also open each listing's own page and read its text
+#                     (better keyword matching, slower)
+#
+# type: bonfire  (agencies that post on <org>.bonfirehub.com)
+#   org             - the subdomain, e.g. "cityofmadison"
+#
+# type: sam_gov  (federal opportunities in Wisconsin, via the official API)
+#   needs a free API key from sam.gov in the SAM_API_KEY environment variable;
+#   the source is skipped when the key is missing.
+#   naics           - NAICS codes to search
+#   state           - place-of-performance state
+#   days_back       - how far back to look for postings
+#
+# NOTE: these URLs are starting points. Bid pages move often, so after your
+# first run check the Sources tab in the dashboard: any source showing an
+# error or 0 listings needs its URL (or an item_selector) updated.
+
+sources:
+  - name: Wisconsin VendorNet (State)
+    agency: State of Wisconsin
+    type: html
+    url: https://vendornet.wi.gov/Bids.aspx
+    enabled: true
+
+  - name: WisDOT Engineering Consultant Selection
+    agency: Wisconsin Department of Transportation
+    type: html
+    url: https://wisconsindot.gov/Pages/doing-bus/eng-consultants/cnslt-rsrces/selection/default.aspx
+    enabled: true
+
+  - name: WI DOA Division of Facilities Development
+    agency: Wisconsin Department of Administration
+    type: html
+    url: https://doa.wi.gov/Pages/DoingBusiness/DFD-Consultant-Selection.aspx
+    enabled: true
+
+  - name: City of Milwaukee DPW Bids & Contracts
+    agency: City of Milwaukee
+    type: html
+    url: https://city.milwaukee.gov/dpw/infrastructure/Bids-and-Contracts
+    enabled: true
+
+  - name: City of Milwaukee Purchasing
+    agency: City of Milwaukee
+    type: html
+    url: https://city.milwaukee.gov/Purchasing
+    enabled: true
+
+  - name: Milwaukee County Procurement
+    agency: Milwaukee County
+    type: html
+    url: https://county.milwaukee.gov/EN/Administrative-Services/Procurement
+    enabled: true
+
+  - name: MMSD Bid Opportunities
+    agency: Milwaukee Metropolitan Sewerage District
+    type: html
+    url: https://www.mmsd.com/doing-business/bid-opportunities
+    enabled: true
+
+  - name: City of Madison (Bonfire)
+    agency: City of Madison
+    type: bonfire
+    org: cityofmadison
+    enabled: true
+
+  - name: Waukesha County Purchasing
+    agency: Waukesha County
+    type: html
+    url: https://www.waukeshacounty.gov/administration/purchasing/
+    enabled: true
+
+  - name: Milwaukee Public Schools Procurement
+    agency: Milwaukee Public Schools
+    type: html
+    url: https://mps.milwaukee.k12.wi.us/en/District/About-MPS/Departments/Office-of-Finance/Procurement-Services.htm
+    enabled: true
+
+  - name: SAM.gov (Federal, Wisconsin)
+    agency: U.S. Federal Government
+    type: sam_gov
+    state: WI
+    days_back: 30
+    naics:
+      - "541330"  # Engineering Services
+      - "541320"  # Landscape Architectural Services
+      - "541370"  # Surveying and Mapping Services
+      - "541310"  # Architectural Services
+    enabled: true

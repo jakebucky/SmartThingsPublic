@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Sources · RFP Finder{% endblock %}
+{% block content %}
+<h1>Sources</h1>
+<p class="hint">Edit <code>config/sources.yaml</code> to add, fix or disable sites. A source with an error or
+  0 listings usually means its page moved or needs an <code>item_selector</code>.</p>
+<table class="sources">
+  <thead><tr><th>Source</th><th>Type</th><th>Last run</th><th>Result</th><th>Listings</th><th>Relevant</th><th>New</th></tr></thead>
+  <tbody>
+  {% for s in sources %}
+    {% set r = runs.get(s.name) %}
+    <tr class="{{ 'disabled' if not s.enabled }}">
+      <td>
+        <strong>{{ s.name }}</strong><br>
+        {% if s.url %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.url }}</a>
+        {% elif s.org %}<a href="https://{{ s.org }}.bonfirehub.com/portal/?tab=openOpportunities" target="_blank" rel="noopener">{{ s.org }}.bonfirehub.com</a>{% endif %}
+      </td>
+      <td>{{ s.type }}{% if not s.enabled %}<br><small>disabled</small>{% endif %}</td>
+      <td>{{ r.started_at|pretty_date if r else 'never' }}</td>
+      <td>
+        {% if r %}<span class="pill {{ r.status }}">{{ r.status or 'running' }}</span>
+          {% if r.message %}<br><small class="err">{{ r.message }}</small>{% endif %}
+        {% endif %}
+      </td>
+      <td class="num">{{ r.listings if r else '' }}</td>
+      <td class="num">{{ r.matched if r else '' }}</td>
+      <td class="num">{{ r.new_matches if r else '' }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

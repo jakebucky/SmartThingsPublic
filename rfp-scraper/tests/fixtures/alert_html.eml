@@ -1,0 +1,49 @@
+From: "DemandStar" <notifications@demandstar.com>
+To: bids@example.com
+Subject: New bid notifications matching your commodity codes
+Date: Mon, 09 Nov 2026 07:15:00 -0600
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="b1"
+
+--b1
+Content-Type: text/plain; charset=utf-8
+
+Plain version omitted.
+
+--b1
+Content-Type: text/html; charset=utf-8
+
+<html><body>
+<!-- Illustrative layout only: not a copy of a real DemandStar email. -->
+<table width="600"><tr><td><a href="https://www.demandstar.com/app/login">Log in to DemandStar</a></td></tr>
+<tr><td><h2>New bids matching your profile</h2></td></tr>
+<tr><td>
+  <table>
+    <tr><td><a href="https://click.example.net/ls/click?u=abc1">Professional Engineering Services for Lift Station No. 4 Replacement</a></td></tr>
+    <tr><td>Agency: Racine Unified School District</td></tr>
+    <tr><td>Bid Number: RFQ-27-0012-0-2026/PL</td></tr>
+    <tr><td>Broadcast Date: 11/06/2026</td></tr>
+    <tr><td>Due Date: 12/08/2026 2:00 PM CST</td></tr>
+  </table>
+</td></tr>
+<tr><td>
+  <table>
+    <tr><td><a href="https://click.example.net/ls/click?u=abc2">Custodial Supplies Annual Contract</a></td></tr>
+    <tr><td>Agency: Rock County</td></tr>
+    <tr><td>Bid Number: IFB-2026-44-0-2026/SS</td></tr>
+    <tr><td>Due Date: 11/30/2026</td></tr>
+  </table>
+</td></tr>
+<tr><td>
+  <table>
+    <tr><td><a href="https://click.example.net/ls/click?u=abc3">CTH A Bridge Replacement Design and Construction Engineering Services</a></td></tr>
+    <tr><td>Agency: Walworth County</td></tr>
+    <tr><td>Bid Number: 26-118</td></tr>
+    <tr><td>Due Date: January 12, 2027</td></tr>
+  </table>
+</td></tr>
+<tr><td><a href="https://click.example.net/unsub">Unsubscribe from these notifications</a>
+  <a href="https://www.demandstar.com/app/preferences">Manage your commodity codes</a></td></tr>
+</table>
+</body></html>
+--b1--

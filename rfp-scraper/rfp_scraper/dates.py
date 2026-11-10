@@ -18,7 +18,7 @@ DUE_WORDS = re.compile(
     r"\b(due|deadline|clos(?:e|es|ing)|opening|bid open|submittals?|responses?|proposals? (?:are )?due)\b",
     re.IGNORECASE,
 )
-POSTED_WORDS = re.compile(r"\b(posted|issued|issue date|released?|published|advertised)\b", re.IGNORECASE)
+POSTED_WORDS = re.compile(r"\b(posted|issued|issue date|released?|published|advertised|broadcast)\b", re.IGNORECASE)
 
 
 def parse_date(text: str | None) -> date | None:

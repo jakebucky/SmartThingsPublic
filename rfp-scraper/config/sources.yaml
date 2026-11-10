@@ -27,6 +27,12 @@
 #   state           - place-of-performance state
 #   days_back       - how far back to look for postings
 #
+# type: email_alerts  (bid-alert emails, e.g. from DemandStar)
+#   mode: imap      - read a mailbox: host, folder, from_filter, days_back;
+#                     login from env vars RFP_IMAP_USER / RFP_IMAP_PASSWORD
+#   mode: folder    - read saved .eml/.html/.txt files from `path`
+#   Each bid's agency is read from the email, so agency_type is optional here.
+#
 # NOTE: bid pages move often. After a run, check the Sources tab in the
 # dashboard: any source showing an error or 0 listings needs its URL (or an
 # item_selector) updated. Entries marked "verify" are best guesses; the rest
@@ -231,10 +237,31 @@ sources:
       - "541310"  # Architectural Services
     enabled: true
 
-# Not covered yet: these agencies post formal solicitations only on DemandStar
-# (Euna OpenBids) or OpenGov, which need their own adapter:
-#   Counties: Rock, La Crosse, Walworth, Kenosha, Sheboygan, Winnebago (OpenGov)
-#   Schools:  Racine Unified, Green Bay Area, Oshkosh Area, Eau Claire Area,
-#             Waukesha, Elmbrook, Sun Prairie, Verona, Middleton-Cross Plains,
-#             Janesville, West Allis-West Milwaukee
-#   Colleges: Milwaukee Area Technical College (MATC)
+  # ---------------------------------------------------------------- DemandStar alerts
+  # Many WI agencies post only on DemandStar (Euna OpenBids), including
+  #   Counties: Rock, La Crosse, Walworth, Kenosha, Sheboygan, Racine, Brown, Eau Claire
+  #   Schools:  Racine Unified, Green Bay Area, Oshkosh Area, Eau Claire Area,
+  #             Waukesha, Elmbrook, Sun Prairie, Verona, Middleton-Cross Plains,
+  #             Janesville, West Allis-West Milwaukee
+  #   Colleges: MATC, Madison College
+  # DemandStar has no public API and restricts automated access, so instead of
+  # scraping it we read the alert emails it sends to a registered vendor.
+  # See README "DemandStar" for setup. Both sources are skipped until set up.
+  - name: DemandStar Alerts (mailbox)
+    agency: DemandStar
+    type: email_alerts
+    mode: imap
+    host: imap.gmail.com        # or outlook.office365.com, etc.
+    folder: INBOX               # tip: filter alerts into their own folder
+    from_filter: demandstar
+    days_back: 30
+    enabled: true
+
+  - name: DemandStar Alerts (saved emails)
+    agency: DemandStar
+    type: email_alerts
+    mode: folder
+    path: data/alerts           # drop .eml files here (Outlook: File > Save As)
+    enabled: true
+
+# Not covered yet: Winnebago County posts on OpenGov Procurement.

@@ -4,7 +4,7 @@ from typing import Callable, Iterable
 
 from ..fetch import Fetcher
 from ..models import Listing, SourceSkipped  # noqa: F401 (re-export)
-from . import bonfire, html_page, sam_gov
+from . import bonfire, email_alerts, html_page, sam_gov
 
 SourceFn = Callable[[dict, Fetcher], Iterable[Listing]]
 
@@ -12,6 +12,7 @@ REGISTRY: dict[str, SourceFn] = {
     "html": html_page.scrape,
     "bonfire": bonfire.scrape,
     "sam_gov": sam_gov.scrape,
+    "email_alerts": email_alerts.scrape,
 }
 
 

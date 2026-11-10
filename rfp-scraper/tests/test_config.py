@@ -14,7 +14,8 @@ def test_sources_are_valid():
     assert len(names) == len(set(names)), "duplicate source names"
     for s in sources:
         assert s["type"] in REGISTRY, s
-        assert s.get("agency_type") in AGENCY_TYPES, s
+        if s["type"] != "email_alerts":  # alert emails carry the agency per bid
+            assert s.get("agency_type") in AGENCY_TYPES, s
         if s["type"] == "html":
             u = urlparse(s["url"])
             assert u.scheme == "https" and u.netloc, s
